@@ -1,19 +1,20 @@
 let cnt_frame = 0;
-let circles = [];
+let circles = [];//円iは中心の座標が(circles[4*i],circles[4*i+1])で速度が(circles[4*i+2],circles[4*i+3])
 let freq_cir = 60;
 let radius = 30;
-let speed = 1;
-let s = 0;
-let alpha = 100;
-let raw = [74,75,76,186];
-let col = [65,83,68,70];
+let speed_x = 0,speed_y = 1;//基本の円の落下速度
+let alpha = 100;//行と列を選択したときの不透明度
+let raw = [74,75,76,186];//jkl;
+let col = [65,83,68,70]; //asdf
 let is_gameover = 0;
 let score = 0;
 let life = 3;
 let str = ['♡♡♡','♥♡♡','♥♥♡','♥♥♥'];
 let now_key_condition = 0;
+let canvas_height=400,canvas_width=400;
+let backet = 100;
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(canvas_height, canvas_width);
 }
 
 function draw() {
@@ -24,7 +25,7 @@ function draw() {
   text(score*10,10,40);
   fill(255,0,0,alpha);
   textSize(20);
-  text(str[life],300,40);
+  text(str[life],canvas_width-100,40);
 
   if(is_gameover){
     fill(255);
@@ -34,42 +35,50 @@ function draw() {
 
   }
   if(cnt_frame%freq_cir==0){
-    let t = floor(random(0,4));
-    circles.push(t*100+50);
-    circles.push(10);
+    let start_x = floor(random(0,canvas_width/backet))*backet+backet/2;//4つのレーンからランダムに
+    circles.push(start_x,10);//出現座標
+
+    //10%で斜めのボールがでる
+    if(random(0,10)<1){
+      if(start_x<canvas_width/2) circles.push(1,speed_y);
+      else circles.push(-1,speed_y);
+    }
+    else{
+      circles.push(speed_x,speed_y);
+    }
+  }
+
+  //y方向に少しずつ加速する
+  if(cnt_frame%30==15){
+    speed_y+=1/100;
   }
 
 
 
-  for(let i = s;i < circles.length;i += 2){
-    if(circles[i+1]>430){
-       s += 2;
-       continue;
-     }
-     if(circles[i]==-1&&circles[i+1]==-1){
+  //ボールの描画、位置の修正
+  for(let i = 0;i < circles.length;i += 4){
+
+    if(circles[i]==-1&&circles[i+1]==-1){
       continue;
-     }
+    }
+
+    //今の座標でぬる
     fill('white');
     circle(circles[i],circles[i+1],radius);
-    // circles[i+1]+=circles[i+1]/100;
 
-    circles[i+1] += speed+i/10;
-    if(i%12==10){
-       if(circles[i]<200){
-        circles[i]+=speed;
-      }
-      else{
-        circles[i]-=speed;
-      } 
-    }
-    if(circles[i+1]+5>430){
+    //座標を更新
+    circles[i]   += circles[i+2];
+    circles[i+1] += circles[i+3];
+
+    //端っこに行っていたらゲームオーバー
+
+    if(circles[i]>canvas_width+radius||circles[i]>canvas_height+radius){
       is_gameover = 1;
     }
-    if(circles[i]+5>430){
-      is_gameover = 1;
-    }
+    
   }
 
+  //key操作で色をつける
 
   for(let i=0;i<4;i++){
     if(keyIsDown(raw[i])){
@@ -90,22 +99,22 @@ function draw() {
       now_key_condition=1;
       fill(255,0,0,alpha);
       rect(i*100,j*100,100,100);
-      let is_erased = 0;
-  
-      for(let k = s;k<circles.length;k+=2){
+      let how_many_erased = 0;
+
+      //配列の一部を消しながら探索するので添字は逆順で見る
+      for(let k = circles.length-4;k>=0;k-=4){
+
         if(i*100<=circles[k]&&circles[k]<=i*100+100){
           if(j*100<=circles[k+1]&&circles[k+1]<=j*100+100){
-            // print(k);
-            circles[k] = -1;
-            circles[k+1] = -1;
-            if(score==0)score+=1;
-            else score += 3;
-            is_erased = 1;
-            // circles[k+1] = 500;
+            circles.splice(k,4);
+            if(how_many_erased==0) how_many_erased=1;
+            else how_many_erased+=3;
           }
         }
+        
       }
-      if(!is_erased){
+
+      if(how_many_erased==0){
         life--;
         if(life==0) is_gameover=1;
       }
