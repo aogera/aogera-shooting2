@@ -55,7 +55,12 @@ function draw() {
 
     circles[i+1] += speed+i/10;
     if(i%12==10){
-      circles[i]+=speed;
+       if(circles[i]<200){
+        circles[i]+=speed;
+      }
+      else{
+        circles[i]-=speed;
+      } 
     }
     if(circles[i+1]+5>430){
       is_gameover = 1;
