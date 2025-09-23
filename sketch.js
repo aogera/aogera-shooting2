@@ -22,9 +22,9 @@ function draw() {
   background(220);
   fill(0);
   textSize(40);
-  text(score*10,10,40);
+  text(score,10,40);
   fill(255,0,0,alpha);
-  textSize(20);
+  textSize(30);
   text(str[life],canvas_width-100,40);
 
   if(is_gameover){
@@ -72,7 +72,7 @@ function draw() {
 
     //端っこに行っていたらゲームオーバー
 
-    if(circles[i]>canvas_width+radius||circles[i]>canvas_height+radius){
+    if(circles[i]>canvas_width+radius||circles[i]<-radius||circles[i+1]>canvas_height+radius||circles[i+1]<-radius){
       is_gameover = 1;
     }
     
@@ -107,11 +107,12 @@ function draw() {
         if(i*100<=circles[k]&&circles[k]<=i*100+100){
           if(j*100<=circles[k+1]&&circles[k+1]<=j*100+100){
             circles.splice(k,4);
-            if(how_many_erased==0) how_many_erased=1;
-            else how_many_erased+=3;
+            how_many_erased++;
+            if(how_many_erased==0) score+=10;
+            else score+=30;
           }
         }
-        
+
       }
 
       if(how_many_erased==0){
