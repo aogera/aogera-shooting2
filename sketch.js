@@ -92,11 +92,11 @@ function draw() {
       rect(0,100*i,400,100);
     }
   }
+}
 
-
+function keyPressed(){
   for(let i=0;i<4;i++) for(let j=0;j<4;j++){
-    if(now_key_condition==0&&keyIsPressed&&keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
-      now_key_condition=1;
+    if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
       fill(255,0,0,alpha);
       rect(i*100,j*100,100,100);
       let how_many_erased = 0;
@@ -124,6 +124,3 @@ function draw() {
 
 }
 
-function keyReleased(){
-  if(key==' ') now_key_condition=0;
-}
