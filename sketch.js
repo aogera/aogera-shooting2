@@ -18,6 +18,9 @@ let over_circle_idx=-1;
 let quarter_height=canvas_height/4,quarter_width=canvas_width/4;
 let backet = 100;
 
+let game_state = "select_course";
+let cntdown_timer=-1;
+
 function setup() {
   createCanvas(canvas_width, canvas_height);
   // createCanvas(windowWidth,windowHeight);
@@ -115,18 +118,77 @@ function draw_circle(){
 }
 
 function init(){
+  cnt_frame =0;
   is_gameover = 0;
   circles = [];
   score = 0;
   life = 3;
   speed_x=first_speed_x;
   speed_y=first_speed_y;
+  game_state="prepared";
 }
 
 function draw() {
   cnt_frame++;
-  strokeWeight(0);
   background(220);
+
+
+
+  if(game_state=="select_course"){
+    fill(255,255,0,alpha);
+    rect(quarter_width*0.8,quarter_height*0.8,quarter_width*2.4,quarter_height*0.8);
+    fill(0,0,255,alpha);
+    rect(quarter_width*0.8,quarter_height*2.4,quarter_width*2.4,quarter_height*0.8);
+    return;
+  }
+
+  if(game_state=="prepared"){
+    fill(0);
+    textSize(80);
+    if(cntdown_timer!=-1){
+      fill(255);
+      cntdown_timer--;
+      circle(canvas_width/2,canvas_height/2,100);
+      if(cntdown_timer>=120){
+        fill(0);
+        textAlign(CENTER,CENTER);
+        text("3",canvas_width/2,canvas_height/2);
+      }
+      else if(cntdown_timer>=60){
+        fill(0);
+        textAlign(CENTER,CENTER);
+        text("2",canvas_width/2,canvas_height/2);
+      }
+      else{
+        fill(0);
+        textAlign(CENTER,CENTER);
+        text("1",canvas_width/2,canvas_height/2);
+      }
+      if(cntdown_timer==0){
+        init();
+        game_state="playing";
+      }
+    }
+
+    else{
+      textAlign(CENTER);
+      textSize(20);
+    strokeWeight(0);
+      text("push Space",canvas_width/2,canvas_height/4*3);
+    strokeWeight(1);
+    }
+
+
+
+    // game_state="playing";
+    // init();
+    return;
+  }
+
+
+  textAlign(LEFT);
+
+  strokeWeight(0);
   fill(0);
   textSize(40);
   text(score,10,40);
@@ -146,7 +208,8 @@ function draw() {
     strokeWeight(0);
     textSize(20);
     fill(0);
-    text("push R",canvas_width/3,canvas_height/4*3);
+    textAlign(CENTER);
+    text("push R",canvas_width/2,canvas_height/4*3);
     // text(circles[over_circle_idx],30,30);
     // text(circles[over_circle_idx+1],60,80);
     stroke(0);
@@ -154,6 +217,7 @@ function draw() {
     return;
 
   }
+
   if(cnt_frame%freq_cir==0){
     add_circle();
   }
@@ -183,6 +247,20 @@ function color_line(){
     if(keyIsDown(col[i])){
       fill(255,255,0,alpha);
       rect(0,i*quarter_height,canvas_width,quarter_height);
+    }
+  }
+}
+
+function mousePressed(){
+    fill(255,255,0,alpha);
+    rect(quarter_width*0.8,quarter_height*0.8,quarter_width*2.4,quarter_height*0.8);
+    fill(0,0,255,alpha);
+    rect(quarter_width*0.8,quarter_height*2.4,quarter_width*2.4,quarter_height*0.8);
+  if(game_state =="select_course"){
+    if(quarter_width*0.8<=mouseX&&mouseX<=quarter_width*0.8+quarter_width*2.4){
+      if(quarter_height*0.8<=mouseY&&mouseY<=quarter_height*0.8+quarter_height*0.8){
+        game_state = "prepared";
+      }
     }
   }
 }
@@ -223,6 +301,14 @@ function keyPressed(){
   }
   if(key=='q'){
     fullscreen(0);
+  }
+  // if(key=='z'){
+  //   if(game_state=="prepared") game_state="select_course";
+  //   if(game_state=="playing") game_state=""
+  // }
+
+  if(game_state == "prepared" && key==' '){
+    cntdown_timer = 180;
   }
 
 
