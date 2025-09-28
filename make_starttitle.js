@@ -10,13 +10,17 @@ function make_starttitle(){
 	  rect(quarter_width*0.8,quarter_height*2.4,quarter_width*2.4,quarter_height*0.8);
 }
 function makeGameoverScreen(){
-		fill(255,0,0,alpha);
-	  circle(circles[over_circle_idx],circles[over_circle_idx+1],radius*2);
-	  fill(255);
+    if(over_circle_idx!=-1){
+      fill(255,0,0,alpha);
+      circle(circles[over_circle_idx],circles[over_circle_idx+1],radius*2);
+    }
+    fill(255);
 	  strokeWeight(5);
-	  stroke(255,1,0);
+	  stroke(255,0,0);
 	  textSize(52);
-	  text("GAMEOVER",canvas_width/5-21,canvas_height/2);
+    textAlign(CENTER);
+	  text("GAMEOVER",canvas_width/2,canvas_height/2);
+    textAlign(LEFT);
 	  strokeWeight(0);
 	  textSize(20);
 	  fill(0);
@@ -45,6 +49,12 @@ function makeScores(){
   fill(255,0,0);
   textSize(30);
   text(str[life],canvas_width-100,40);
+
+  textAlign(CENTER,CENTER);
+  fill(0,0,255,alpha/2);
+  textSize(200);
+  text(combo,canvas_width/2,canvas_height/2);
+  textAlign(LEFT);
   strokeWeight(1);
 }
 function color_line(){
@@ -87,4 +97,16 @@ function makePrepare(){
         game_state="playing";
       }
 
+}
+
+function makeAllCrear(){
+  textAlign(CENTER);
+  fill(255);
+  strokeWeight(5);
+  stroke(255,1,0);
+  textSize(52);
+  text("AllClear!",canvas_width/2,canvas_height/2); 
+  stroke(0);
+  strokeWeight(1);
+  textAlign(LEFT);
 }

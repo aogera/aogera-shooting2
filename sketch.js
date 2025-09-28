@@ -20,6 +20,11 @@ let backet = 100;
 
 let game_state = "select_course";
 let cntdown_timer=-1;
+let isGetBonus=1;
+let allClearTimer=0;
+
+let combo = 0;
+
 
 
 
@@ -37,6 +42,60 @@ function init(){
   speed_x=first_speed_x;
   speed_y=first_speed_y;
   game_state="prepared";
+  cntdown_timer=-1;
+  combo = 0;
+}
+function mousePressed(){
+  if(game_state =="select_course"){
+    if(quarter_width*0.8<=mouseX&&mouseX<=quarter_width*0.8+quarter_width*2.4){
+      if(quarter_height*0.8<=mouseY&&mouseY<=quarter_height*0.8+quarter_height*0.8){
+        game_state = "prepared";
+      }
+    }
+  }
+}
+
+function keyPressed(){
+  for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+    if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
+      if(is_gameover)continue;
+      fill(255,0,0,alpha);
+      rect(i*quarter_height,j*quarter_width,quarter_height,quarter_width);
+      let how_many_erased = 0;
+
+      //配列の一部を消しながら探索するので添字は逆順で見る
+      for(let k = circles.length-4;k>=0;k-=4){
+
+        if(i*quarter_width<=circles[k]&&circles[k]<=(i+1)*quarter_width){
+          if(j*quarter_height<=circles[k+1]&&circles[k+1]<=(j+1)*quarter_height){
+            circles.splice(k,4);
+            if(how_many_erased==0) score+=10+floor(combo**0.5);
+            else score+=3*(10+floor(combo**0.5));
+            how_many_erased++;
+          }
+        }
+      }
+
+      combo+=how_many_erased;
+
+      if(how_many_erased==0){
+        if(life>0) life--;
+        if(life==0) is_gameover=1;
+        combo=0;
+      }
+    }
+  }
+
+  if(key=='r'){
+    init();
+  }
+ 
+
+  if(game_state == "prepared" && key==' '){
+    cntdown_timer = 180;
+  }
+
+
 }
 
 function draw() {
@@ -67,6 +126,16 @@ function draw() {
 
   }
 
+  if(circles.length==0&&cnt_frame>60||allClearTimer){
+    if(!allClearTimer&&circles.length==0) allClearTimer=60;
+    makeAllCrear();
+    allClearTimer--;
+    if(!isGetBonus&&circles.length==0){
+      score+=100;
+      isGetBonus=1;
+    }
+  }
+
   if(cnt_frame%freq_cir==0){
     add_circle();
   }
@@ -78,54 +147,5 @@ function draw() {
 
   //key操作で色をつける
   color_line();
-
-}
-
-function mousePressed(){
-  if(game_state =="select_course"){
-    if(quarter_width*0.8<=mouseX&&mouseX<=quarter_width*0.8+quarter_width*2.4){
-      if(quarter_height*0.8<=mouseY&&mouseY<=quarter_height*0.8+quarter_height*0.8){
-        game_state = "prepared";
-      }
-    }
-  }
-}
-
-function keyPressed(){
-  for(let i=0;i<4;i++) for(let j=0;j<4;j++){
-    if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
-      fill(255,0,0,alpha);
-      rect(i*quarter_height,j*quarter_width,quarter_height,quarter_width);
-      let how_many_erased = 0;
-
-      //配列の一部を消しながら探索するので添字は逆順で見る
-      for(let k = circles.length-4;k>=0;k-=4){
-
-        if(i*quarter_width<=circles[k]&&circles[k]<=(i+1)*quarter_width){
-          if(j*quarter_height<=circles[k+1]&&circles[k+1]<=(j+1)*quarter_height){
-            circles.splice(k,4);
-            how_many_erased++;
-            if(how_many_erased==0) score+=10;
-            else score+=30;
-          }
-        }
-      }
-
-      if(how_many_erased==0){
-        if(life>0) life--;
-        if(life==0) is_gameover=1;
-      }
-    }
-  }
-
-  if(key=='r'){
-    init();
-  }
- 
-
-  if(game_state == "prepared" && key==' '){
-    cntdown_timer = 180;
-  }
-
 
 }

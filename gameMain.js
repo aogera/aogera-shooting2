@@ -1,10 +1,11 @@
 function add_circle(){
+    isGetBonus=0;
     let start_x = floor(random(0,canvas_width/quarter_width))*backet+backet/2;//4つのレーンからランダムに
     let start_y = floor(random(0,canvas_height/quarter_height))*backet+backet/2;//4つのレーンからランダムに
 
     // circles.push(start_x,canvas_height+radius,0,-speed_y);
 
-    let direction = max(0,floor(random(-5,4)));
+    let direction = max(0,floor(random(-2,4)));
     if(cnt_frame<600) direction=0;
     // let direction = 3;
 
