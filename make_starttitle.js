@@ -1,7 +1,3 @@
-function setCanvas(a,b){
-	canvas_width=a;
-	canvas_height=b;
-}
 // function make_starttitle(quarter_width,quarter_height,alpha){
 function make_starttitle(){
 		fill(255,255,0,alpha);
@@ -12,7 +8,7 @@ function make_starttitle(){
 function makeGameoverScreen(){
     if(over_circle_idx!=-1){
       fill(255,0,0,alpha);
-      circle(circles[over_circle_idx],circles[over_circle_idx+1],radius*2);
+      circle(meteors[over_circle_idx].x,meteors[over_circle_idx].y,meteors[over_circle_idx].radius*2);
     }
     fill(255);
 	  strokeWeight(5);

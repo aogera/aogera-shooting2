@@ -1,10 +1,12 @@
 let cnt_frame = 0;
-let circles = [];//円iは中心の座標が(circles[4*i],circles[4*i+1])で速度が(circles[4*i+2],circles[4*i+3])
+// let circles = [];//円iは中心の座標が(circles[4*i],circles[4*i+1])で速度が(circles[4*i+2],circles[4*i+3])
+let meteors = [];
 let freq_cir = 60;
 let radius = 15;
 let speed_x = 1,speed_y = 1;//基本の円の落下速度
 let first_speed_x = 1,first_speed_y = 1;//基本の円の落下の初速度
 let acc_x=1/700;acc_y = 1/700;//1フレームごとの加速度。同じ円の加速度は0。新しい円の初速度がかわる
+// let gravity=0.01;
 let alpha = 100;//行と列を選択したときの不透明度
 let raw = [74,75,76,186];//jkl;
 let col = [65,83,68,70]; //asdf
@@ -36,7 +38,7 @@ function setup() {
 function init(){
   cnt_frame =0;
   is_gameover = 0;
-  circles = [];
+  meteors = [];
   score = 0;
   life = 3;
   speed_x=first_speed_x;
@@ -64,17 +66,29 @@ function keyPressed(){
       let how_many_erased = 0;
 
       //配列の一部を消しながら探索するので添字は逆順で見る
-      for(let k = circles.length-4;k>=0;k-=4){
-
-        if(i*quarter_width<=circles[k]&&circles[k]<=(i+1)*quarter_width){
-          if(j*quarter_height<=circles[k+1]&&circles[k+1]<=(j+1)*quarter_height){
-            circles.splice(k,4);
+      for(let k=meteors.length-1;k>=0;k--){
+        if(i*canvas_width*0.25<=meteors[k].x+meteors[k].radius&&meteors[k].x-meteors[k].radius<=(i+1)*canvas_width*0.25){
+          if(j*canvas_height*0.25<=meteors[k].y+meteors[k].radius&&meteors[k].y-meteors[k].radius<=(j+1)*canvas_height*0.25){
+            meteors.splice(k,1);
             if(how_many_erased==0) score+=10+floor(combo**0.5);
             else score+=3*(10+floor(combo**0.5));
             how_many_erased++;
           }
         }
       }
+
+
+      // for(let k = circles.length-4;k>=0;k-=4){
+
+      //   if(i*quarter_width<=circles[k]&&circles[k]<=(i+1)*quarter_width){
+      //     if(j*quarter_height<=circles[k+1]&&circles[k+1]<=(j+1)*quarter_height){
+      //       circles.splice(k,4);
+      //       if(how_many_erased==0) score+=10+floor(combo**0.5);
+      //       else score+=3*(10+floor(combo**0.5));
+      //       how_many_erased++;
+      //     }
+      //   }
+      // }
 
       combo+=how_many_erased;
 
@@ -126,24 +140,44 @@ function draw() {
 
   }
 
-  if(circles.length==0&&cnt_frame>60||allClearTimer){
-    if(!allClearTimer&&circles.length==0) allClearTimer=60;
+  if(meteors.length==0&&cnt_frame>60||allClearTimer){
+    if(!allClearTimer&&meteors.length==0) allClearTimer=60;
     makeAllCrear();
     allClearTimer--;
-    if(!isGetBonus&&circles.length==0){
+    if(!isGetBonus&&meteors.length==0){
       score+=100;
       isGetBonus=1;
     }
   }
 
   if(cnt_frame%freq_cir==0){
-    add_circle();
+    // add_circle();
+    if(cnt_frame<300) meteors.push(new Meteor(0));
+    else if(random(0,5)<1) meteors.push(new Meteor(floor(random(0,4)),radius*2,1))
+    else meteors.push(new Meteor(floor(random(0,4))));
   }
 
+  // if(cnt_frame%60){
+  //   gravity+=0.0001;
+  // }
 
-  drawMoveCircle();
 
-  judgeGameover();
+
+  for(let i=0;i<meteors.length;i++){
+    meteors[i].move();
+    meteors[i].draw();
+    if(meteors[i].judgeOverCanvas()){
+      is_gameover=1;
+      over_circle_idx=i;
+    }
+
+  }
+
+  speed_x+=acc_x;
+  speed_y+=acc_y;
+  // drawMoveCircle();
+
+  // judgeGameover();
 
   //key操作で色をつける
   color_line();
