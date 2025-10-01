@@ -1,4 +1,28 @@
-// function make_starttitle(quarter_width,quarter_height,alpha){
+class ShakeCanvas{
+  constructor(){
+    this.magnitude=0;
+    this.damping=  0.90;
+    this.beforeInit=true;
+  }
+  init(){
+    this.magnitude=30;
+  }
+  shake(){
+    translate(
+      random(-this.magnitude,this.magnitude),
+      random(-this.magnitude,this.magnitude)
+    )
+    this.magnitude*=this.damping;
+  }
+}
+
+
+
+
+
+
+
+
 function make_starttitle(){
 		fill(255,255,0,alpha);
 	  rect(quarter_width*0.8,quarter_height*0.8,quarter_width*2.4,quarter_height*0.8);

@@ -27,15 +27,18 @@ let allClearTimer=0;
 
 let combo = 0;
 
+let shakeCanvas;
 
 
 
 function setup() {
+  shakeCanvas=new ShakeCanvas();
   createCanvas(canvas_width, canvas_height);
 }
 
 
 function init(){
+  shakeCanvas=new ShakeCanvas();
   cnt_frame =0;
   is_gameover = 0;
   meteors = [];
@@ -78,18 +81,6 @@ function keyPressed(){
       }
 
 
-      // for(let k = circles.length-4;k>=0;k-=4){
-
-      //   if(i*quarter_width<=circles[k]&&circles[k]<=(i+1)*quarter_width){
-      //     if(j*quarter_height<=circles[k+1]&&circles[k+1]<=(j+1)*quarter_height){
-      //       circles.splice(k,4);
-      //       if(how_many_erased==0) score+=10+floor(combo**0.5);
-      //       else score+=3*(10+floor(combo**0.5));
-      //       how_many_erased++;
-      //     }
-      //   }
-      // }
-
       combo+=how_many_erased;
 
       if(how_many_erased==0){
@@ -116,6 +107,8 @@ function draw() {
   cnt_frame++;
   background(220);
 
+  shakeCanvas.shake();
+
   if(game_state=="select_course"){
     make_starttitle(quarter_width,quarter_height,alpha);
     return;
@@ -134,10 +127,12 @@ function draw() {
   makeScores();
 
   if(is_gameover){
-
+    if(shakeCanvas.beforeInit){
+      shakeCanvas.init();
+      shakeCanvas.beforeInit=false;
+    }
     makeGameoverScreen();
     return;
-
   }
 
   if(meteors.length==0&&cnt_frame>60||allClearTimer){
@@ -151,7 +146,6 @@ function draw() {
   }
 
   if(cnt_frame%freq_cir==0){
-    // add_circle();
     if(cnt_frame<300) meteors.push(new Meteor(0));
     else if(random(0,5)<1) meteors.push(new Meteor(floor(random(0,4)),radius*2,1))
     else meteors.push(new Meteor(floor(random(0,4))));
@@ -175,11 +169,7 @@ function draw() {
 
   speed_x+=acc_x;
   speed_y+=acc_y;
-  // drawMoveCircle();
-
-  // judgeGameover();
 
   //key操作で色をつける
   color_line();
-
 }

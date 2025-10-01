@@ -7,7 +7,7 @@ class Meteor{
         this.isBeforeEnterCanvas = true;
         this.isDiagonal=_isDiagonal;
         // this.ay = gravity;
-        if(_direction==0){
+        if(this.direction==0){
             this.x=canvas_width*0.25*(floor(random(0,4))+0.5);
             this.y=-_radius;
 
@@ -15,7 +15,7 @@ class Meteor{
             else this.vx=this.x<canvas_width*0.5?1:-1;
             this.vy=speed_y;
         }
-        if(_direction==1){
+        if(this.direction==1){
             this.x=-_radius;
             this.y=canvas_height*0.25*(floor(random(0,3))+0.5);
 
@@ -23,7 +23,7 @@ class Meteor{
             if(!this.isDiagonal) this.vy=0;
             else this.vy=this.y<canvas_height*0.5?1:-1;
         }
-        if(_direction==2){
+        if(this.direction==2){
             this.x=canvas_width*0.25*(floor(random(0,4))+0.5);
             this.y=canvas_height+_radius;
 
@@ -31,7 +31,7 @@ class Meteor{
             else this.vx=this.x<canvas_width*0.5?1:-1;
             this.vy=-speed_y;
         }
-        if(_direction==3){
+        if(this.direction==3){
             this.x=canvas_width+_radius;
             this.y=canvas_height*0.25*(floor(random(0,3))+0.5);
 
