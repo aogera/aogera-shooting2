@@ -1,45 +1,15 @@
 class Meteor{
-    constructor(_direction,_radius=radius,_isDiagonal=0){
-    // constructor(_direction,_radius=radius){
+
+    constructor(startX,startY,velocityX,velocityY,_radius=radius){
         isGetBonus=0;
-        this.direction=_direction;
+        this.x=startX;
+        this.y=startY;
+        this.vx=velocityX;
+        this.vy=velocityY;
         this.radius = _radius;
         this.isBeforeEnterCanvas = true;
-        this.isDiagonal=_isDiagonal;
-        // this.ay = gravity;
-        if(this.direction==0){
-            this.x=canvas_width*0.25*(floor(random(0,4))+0.5);
-            this.y=-_radius;
-
-            if(!this.isDiagonal) this.vx=0;
-            else this.vx=this.x<canvas_width*0.5?1:-1;
-            this.vy=speed_y;
-        }
-        if(this.direction==1){
-            this.x=-_radius;
-            this.y=canvas_height*0.25*(floor(random(0,3))+0.5);
-
-            this.vx=speed_x;
-            if(!this.isDiagonal) this.vy=0;
-            else this.vy=this.y<canvas_height*0.5?1:-1;
-        }
-        if(this.direction==2){
-            this.x=canvas_width*0.25*(floor(random(0,4))+0.5);
-            this.y=canvas_height+_radius;
-
-            if(!this.isDiagonal) this.vx=0;
-            else this.vx=this.x<canvas_width*0.5?1:-1;
-            this.vy=-speed_y;
-        }
-        if(this.direction==3){
-            this.x=canvas_width+_radius;
-            this.y=canvas_height*0.25*(floor(random(0,3))+0.5);
-
-            this.vx=-speed_x;
-            if(!this.isDiagonal) this.vy=0;
-            else this.vy=this.y<canvas_height*0.5?1:-1;
-        }
     }
+
     move(){
         this.x+=this.vx;
         this.y+=this.vy;
@@ -49,7 +19,7 @@ class Meteor{
         }
     }
     draw(){
-        this.isDiagonal?fill('gray'):fill('white');
+        (this.vx!=0&&this.vy!=0)?fill('gray'):fill('white');
         circle(this.x,this.y,this.radius*2);
     }
     judgeOverCanvas(){

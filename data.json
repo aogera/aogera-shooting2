@@ -1,0 +1,43 @@
+[
+{
+    "Time":10,
+    "X" : 100,
+    "Y" : 19,
+    "VelocityX":0,
+    "VelocityY":1,
+    "Radius":30
+},
+{
+    "Time":30,
+    "X" : 100,
+    "Y" : 39,
+    "VelocityX":3,
+    "VelocityY":1,
+    "Radius":20
+},
+{
+    "Time":83,
+    "X" : 30,
+    "Y" : 89,
+    "VelocityX":0,
+    "VelocityY":3,
+    "Radius":10
+},
+{
+    "Time":93,
+    "X" : 80,
+    "Y" : 19,
+    "VelocityX":9,
+    "VelocityY":3,
+    "Radius":100
+},
+{
+    "Time":193,
+    "X" : 90,
+    "Y" : 39,
+    "VelocityX":-9,
+    "VelocityY":0,
+    "Radius":70
+}
+]
+

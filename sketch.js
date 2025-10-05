@@ -29,9 +29,14 @@ let combo = 0;
 
 let shakeCanvas;
 
+let gameMode=-1;
 
+let meteorData;
+
+let isPushed = 0;
 
 function setup() {
+  meteorData = loadJSON('data.json');
   shakeCanvas=new ShakeCanvas();
   createCanvas(canvas_width, canvas_height);
 }
@@ -49,12 +54,20 @@ function init(){
   game_state="prepared";
   cntdown_timer=-1;
   combo = 0;
+  isPushed=0;
 }
 function mousePressed(){
   if(game_state =="select_course"){
     if(quarter_width*0.8<=mouseX&&mouseX<=quarter_width*0.8+quarter_width*2.4){
       if(quarter_height*0.8<=mouseY&&mouseY<=quarter_height*0.8+quarter_height*0.8){
         game_state = "prepared";
+        gameMode = 1;
+      }
+    }
+    if(quarter_width*0.8<=mouseX&&mouseX<=quarter_width*0.8+quarter_width*2.4){
+      if(quarter_height*2.4<=mouseY&&mouseY<=quarter_height*2.4+quarter_height*0.8){
+        game_state = "prepared";
+        gameMode = 2;
       }
     }
   }
@@ -135,7 +148,7 @@ function draw() {
     return;
   }
 
-  if(meteors.length==0&&cnt_frame>60||allClearTimer){
+  if(meteors.length==0&&cnt_frame>60||allClearTimer>0){
     if(!allClearTimer&&meteors.length==0) allClearTimer=60;
     makeAllCrear();
     allClearTimer--;
@@ -144,11 +157,37 @@ function draw() {
       isGetBonus=1;
     }
   }
+  if(gameMode==1){
 
-  if(cnt_frame%freq_cir==0){
-    if(cnt_frame<300) meteors.push(new Meteor(0));
-    else if(random(0,5)<1) meteors.push(new Meteor(floor(random(0,4)),radius*2,1))
-    else meteors.push(new Meteor(floor(random(0,4))));
+
+    if(cnt_frame%freq_cir==0){
+      let sx = floor(random(0,4));
+      let sy = floor(random(0,4));
+      let direction = floor(random(0,4));
+      let dx = [0,0,1,-1],dy = [1,-1,0,0];
+      let isDiagonal = floor(random(0,2));
+    
+      if(cnt_frame<300) direction=0,isDiagonal=0;
+      meteors.push(new Meteor(
+        (dx[direction]?-radius:canvas_width*(0.25*sx+0.125)),
+        (dy[direction]?-radius:canvas_height*(0.25*sy+0.125)),
+        (dx[direction]?speed_x:(isDiagonal?(sx<2?speed_x:-speed_x):0)),
+        (dy[direction]?speed_y:(isDiagonal?(sy<2?speed_y:-speed_y):0))
+      ));
+    }
+  }
+
+  else if(gameMode==2&&isPushed==0){
+    for(let i=0;i<5;i++){
+      let t =meteorData[i%5]["Time"];
+      let tx=meteorData[i%5]["X"];
+      let ty=meteorData[i%5]["Y"];
+      let vx=meteorData[i%5]["VelocityX"];
+      let vy=meteorData[i%5]["VelocityY"];
+      let r =meteorData[i%5]["Radius"]
+      meteors.push(new Meteor(tx-t*vx,ty-t*vy,vx,vy,r));
+    }
+    isPushed=1;
   }
 
   // if(cnt_frame%60){
@@ -173,3 +212,4 @@ function draw() {
   //key操作で色をつける
   color_line();
 }
+
