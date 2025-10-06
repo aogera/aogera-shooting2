@@ -17,12 +17,6 @@ class ShakeCanvas{
 }
 
 
-
-
-
-
-
-
 function make_starttitle(){
 		fill(255,255,0,alpha);
 	  rect(quarter_width*0.8,quarter_height*0.8,quarter_width*2.4,quarter_height*0.8);
@@ -39,78 +33,85 @@ function makeGameoverScreen(){
 	  stroke(255,0,0);
 	  textSize(52);
     textAlign(CENTER);
-	  text("GAMEOVER",canvas_width/2,canvas_height/2);
+	  text("GAMEOVER",canvasWidth/2,canvasHeight/2);
     textAlign(LEFT);
 	  strokeWeight(0);
 	  textSize(20);
 	  fill(0);
 	  textAlign(CENTER);
-	  text("push R",canvas_width/2,canvas_height/4*3);
+	  text("push R",canvasWidth/2+random(-1,1),canvasHeight/4*3+random(-1,1));
 	  stroke(0);
 	  strokeWeight(1);
 }
 function readySpace(){
-    fill(0);
-    textSize(80);
+  fill(0);
+  textSize(80);
   textAlign(CENTER);
   textSize(20);
   strokeWeight(0);
-  text("push Space",canvas_width/2,canvas_height/4*3);
+  text("push Space",canvasWidth/2,canvasHeight/4*3);
   strokeWeight(1);
 }
 
 function makeScores(){
   textAlign(LEFT);
 
-  strokeWeight(0);
+  strokeWeight(5);
+  stroke('white');
   fill(0);
   textSize(40);
   text(score,10,40);
   fill(255,0,0);
   textSize(30);
-  text(str[life],canvas_width-100,40);
+  text(str[life],canvasWidth-100,40);
+  strokeWeight(0);
+  stroke('black');
 
   textAlign(CENTER,CENTER);
   fill(0,0,255,alpha/2);
   textSize(200);
-  text(combo,canvas_width/2,canvas_height/2);
+  text(combo,canvasWidth/2,canvasHeight/2);
   textAlign(LEFT);
   strokeWeight(1);
 }
+
 function color_line(){
   for(let i=0;i<4;i++){
     if(keyIsDown(raw[i])){
       fill(0,255,0,alpha);
-      rect(i*quarter_width,0,quarter_width,canvas_height);
+      rect(marginWidth+insideWidth*i/4,marginHeight,insideWidth/4,insideHeight);
+      // rect(i*quarter_width,0,quarter_width,canvasHeight);
     }
   }
   for(let i=0;i<4;i++){
     if(keyIsDown(col[i])){
       fill(255,255,0,alpha);
-      rect(0,i*quarter_height,canvas_width,quarter_height);
+      rect(marginWidth,marginHeight+insideHeight*i/4,insideWidth,insideHeight/4);
+      // rect(0,i*quarter_height,canvasWidth,quarter_height);
     }
   }
 }
+
 function makePrepare(){
     fill(0);
     textSize(80);
       fill(255);
       cntdown_timer--;
-      circle(canvas_width/2,canvas_height/2,100);
+      circle(canvasWidth/2,canvasHeight/2,100);
       if(cntdown_timer>=120){
         fill(0);
         textAlign(CENTER,CENTER);
-        text("3",canvas_width/2,canvas_height/2);
+        text("3",canvasWidth/2,canvasHeight/2);
       }
       else if(cntdown_timer>=60){
         fill(0);
         textAlign(CENTER,CENTER);
-        text("2",canvas_width/2,canvas_height/2);
+        text("2",canvasWidth/2,canvasHeight/2);
       }
       else{
         fill(0);
         textAlign(CENTER,CENTER);
-        text("1",canvas_width/2,canvas_height/2);
+        text("1",canvasWidth/2,canvasHeight/2);
       }
       if(cntdown_timer==0){
         init();
@@ -125,7 +126,7 @@ function makeAllCrear(){
   strokeWeight(5);
   stroke(255,1,0);
   textSize(52);
-  text("AllClear!",canvas_width/2,canvas_height/2); 
+  text("AllClear!",canvasWidth/2,canvasHeight/2); 
   stroke(0);
   strokeWeight(1);
   textAlign(LEFT);

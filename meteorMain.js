@@ -14,7 +14,7 @@ class Meteor{
         this.x+=this.vx;
         this.y+=this.vy;
 
-        if(0<=this.x&&this.x<=canvas_width&&0<=this.y&&this.y<=canvas_height){
+        if(marginWidth<=this.x&&this.x<=insideWidth+marginWidth&&marginHeight<=this.y&&this.y<=insideHeight+marginHeight){
             this.isBeforeEnterCanvas=false;
         }
     }
@@ -24,7 +24,7 @@ class Meteor{
     }
     judgeOverCanvas(){
         if(this.isBeforeEnterCanvas)return false;
-        else if(this.x<0||this.y<0||this.x>canvas_width||this.y>canvas_height) return true;
+        else if(this.x<marginWidth||this.y<marginHeight||this.x>insideWidth+marginWidth||this.y>insideHeight+marginHeight) return true;
         else return false;
     }
 }

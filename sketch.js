@@ -5,7 +5,7 @@ let freq_cir = 60;
 let radius = 15;
 let speed_x = 1,speed_y = 1;//基本の円の落下速度
 let first_speed_x = 1,first_speed_y = 1;//基本の円の落下の初速度
-let acc_x=1/700;acc_y = 1/700;//1フレームごとの加速度。同じ円の加速度は0。新しい円の初速度がかわる
+let acc_x=0.1,acc_y=0.1;
 // let gravity=0.01;
 let alpha = 100;//行と列を選択したときの不透明度
 let raw = [74,75,76,186];//jkl;
@@ -14,10 +14,14 @@ let is_gameover = 0;
 let score = 0;
 let life = 3;
 let str = ['♡♡♡','♥♡♡','♥♥♡','♥♥♥'];
-let canvas_height=400,canvas_width=400;
+
+let canvasHeight=500,canvasWidth=500;
+let marginHeight=70,marginWidth=70;
+let insideHeight=canvasHeight-marginHeight*2,insideWidth=canvasWidth-marginWidth*2;
+
 let over_circle_idx=-1;
 
-let quarter_height=canvas_height/4,quarter_width=canvas_width/4;
+let quarter_height=canvasHeight/4,quarter_width=canvasWidth/4;
 let backet = 100;
 
 let game_state = "select_course";
@@ -38,7 +42,7 @@ let isPushed = 0;
 function setup() {
   meteorData = loadJSON('data.json');
   shakeCanvas=new ShakeCanvas();
-  createCanvas(canvas_width, canvas_height);
+  createCanvas(canvasWidth, canvasHeight);
 }
 
 
@@ -77,14 +81,13 @@ function keyPressed(){
   for(let i=0;i<4;i++) for(let j=0;j<4;j++){
     if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
       if(is_gameover)continue;
-      fill(255,0,0,alpha);
-      rect(i*quarter_height,j*quarter_width,quarter_height,quarter_width);
+
       let how_many_erased = 0;
 
       //配列の一部を消しながら探索するので添字は逆順で見る
       for(let k=meteors.length-1;k>=0;k--){
-        if(i*canvas_width*0.25<=meteors[k].x+meteors[k].radius&&meteors[k].x-meteors[k].radius<=(i+1)*canvas_width*0.25){
-          if(j*canvas_height*0.25<=meteors[k].y+meteors[k].radius&&meteors[k].y-meteors[k].radius<=(j+1)*canvas_height*0.25){
+        if(marginWidth+i*insideWidth/4<=meteors[k].x+meteors[k].radius&&meteors[k].x-meteors[k].radius<=marginWidth+(i+1)*insideWidth/4){
+          if(marginHeight+j*insideHeight/4<=meteors[k].y+meteors[k].radius&&meteors[k].y-meteors[k].radius<=marginHeight+(j+1)*insideHeight/4){
             meteors.splice(k,1);
             if(how_many_erased==0) score+=10+floor(combo**0.5);
             else score+=3*(10+floor(combo**0.5));
@@ -118,7 +121,23 @@ function keyPressed(){
 
 function draw() {
   cnt_frame++;
-  background(220);
+  background(200);
+  strokeWeight(0);
+  fill(240);
+  rect(marginWidth,marginHeight,insideWidth,insideHeight);
+  strokeWeight(1);
+
+
+  //余白の大きさを変えられる
+  // marginWidth+=0.1;
+  // marginHeight+=0.1;
+  // insideHeight=canvasHeight-marginHeight*2,insideWidth=canvasWidth-marginWidth*2;
+  // insideHeight=canvasHeight-marginHeight*2,insideWidth=canvasWidth-marginWidth*2;
+
+
+
+
+
 
   shakeCanvas.shake();
 
@@ -169,12 +188,13 @@ function draw() {
     
       if(cnt_frame<300) direction=0,isDiagonal=0;
       meteors.push(new Meteor(
-        (dx[direction]?-radius:canvas_width*(0.25*sx+0.125)),
-        (dy[direction]?-radius:canvas_height*(0.25*sy+0.125)),
+        (dx[direction]?-radius:marginWidth+insideWidth*(0.25*sx+0.125)),
+        (dy[direction]?-radius:marginHeight+insideHeight*(0.25*sy+0.125)),
         (dx[direction]?speed_x:(isDiagonal?(sx<2?speed_x:-speed_x):0)),
         (dy[direction]?speed_y:(isDiagonal?(sy<2?speed_y:-speed_y):0))
       ));
     }
+
   }
 
   else if(gameMode==2&&isPushed==0){
@@ -206,8 +226,8 @@ function draw() {
 
   }
 
-  speed_x+=acc_x;
-  speed_y+=acc_y;
+  speed_x += acc_x/(cnt_frame**0.9);
+  speed_y += acc_y/(cnt_frame**0.9);
 
   //key操作で色をつける
   color_line();
