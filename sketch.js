@@ -78,6 +78,7 @@ function mousePressed(){
 }
 
 function keyPressed(){
+  let selectGrid = 0;
   for(let i=0;i<4;i++) for(let j=0;j<4;j++){
     if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
       if(is_gameover)continue;
@@ -97,6 +98,7 @@ function keyPressed(){
       }
 
 
+      if(how_many_erased>0) selectGrid++;
       combo+=how_many_erased;
 
       if(how_many_erased==0){
@@ -105,6 +107,8 @@ function keyPressed(){
         combo=0;
       }
     }
+    if(selectGrid>1) score += selectGrid*10;
+    if(selectGrid>3) score += selectGrid*50;
   }
 
   if(key=='r'){
@@ -198,13 +202,13 @@ function draw() {
   }
 
   else if(gameMode==2&&isPushed==0){
-    for(let i=0;i<5;i++){
-      let t =meteorData[i%5]["Time"];
-      let tx=meteorData[i%5]["X"];
-      let ty=meteorData[i%5]["Y"];
-      let vx=meteorData[i%5]["VelocityX"];
-      let vy=meteorData[i%5]["VelocityY"];
-      let r =meteorData[i%5]["Radius"]
+    for(let i=0;i<4;i++){
+      let t =meteorData[i]["Time"];
+      let tx=meteorData[i]["X"];
+      let ty=meteorData[i]["Y"];
+      let vx=meteorData[i]["VelocityX"];
+      let vy=meteorData[i]["VelocityY"];
+      let r =meteorData[i]["Radius"]
       meteors.push(new Meteor(tx-t*vx,ty-t*vy,vx,vy,r));
     }
     isPushed=1;

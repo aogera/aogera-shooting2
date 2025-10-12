@@ -24,7 +24,7 @@ function make_starttitle(){
 	  rect(quarter_width*0.8,quarter_height*2.4,quarter_width*2.4,quarter_height*0.8);
 }
 function makeGameoverScreen(){
-    if(over_circle_idx!=-1){
+    if(over_circle_idx!=-1&&meteors.length){
       fill(255,0,0,alpha);
       circle(meteors[over_circle_idx].x,meteors[over_circle_idx].y,meteors[over_circle_idx].radius*2);
     }
@@ -78,18 +78,26 @@ function makeScores(){
 function color_line(){
   for(let i=0;i<4;i++){
     if(keyIsDown(raw[i])){
-      fill(0,255,0,alpha);
+      fill(0,255,0,alpha*0.5);
       rect(marginWidth+insideWidth*i/4,marginHeight,insideWidth/4,insideHeight);
       // rect(i*quarter_width,0,quarter_width,canvasHeight);
     }
   }
   for(let i=0;i<4;i++){
     if(keyIsDown(col[i])){
-      fill(255,255,0,alpha);
+      fill(255,255,0,alpha*0.5);
       rect(marginWidth,marginHeight+insideHeight*i/4,insideWidth,insideHeight/4);
       // rect(0,i*quarter_height,canvasWidth,quarter_height);
     }
   }
+
+  for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+    if(keyIsDown(raw[i])&&keyIsDown(col[j])){
+      fill(255,0,0,alpha*1.7);
+      rect(marginWidth+insideWidth*i/4,marginHeight+insideHeight*j/4,insideWidth/4,insideHeight/4);
+    }
+  }
+
 }
 
 function makePrepare(){
