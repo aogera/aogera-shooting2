@@ -1,11 +1,16 @@
+
+let comboBonus        = 5;
+let manyGridBonus     = 20;
+let meteorErasedBonus = 10;
+let manyErasedBonus   = 5;
+
 let cnt_frame = 0;
-// let circles = [];//円iは中心の座標が(circles[4*i],circles[4*i+1])で速度が(circles[4*i+2],circles[4*i+3])
 let meteors = [];
 let freq_cir = 60;
 let radius = 15;
 let speed_x = 1,speed_y = 1;//基本の円の落下速度
 let first_speed_x = 1,first_speed_y = 1;//基本の円の落下の初速度
-let acc_x=0.1,acc_y=0.1;
+let acc_x=0.001,acc_y=0.001;
 // let gravity=0.01;
 let alpha = 100;//行と列を選択したときの不透明度
 let raw = [74,75,76,186];//jkl;
@@ -38,6 +43,8 @@ let gameMode=-1;
 let meteorData;
 
 let isPushed = 0;
+
+let pushingIdx = 0;
 
 function setup() {
   meteorData = loadJSON('data.json');
@@ -79,37 +86,61 @@ function mousePressed(){
 
 function keyPressed(){
   let selectGrid = 0;
+  let eraseIdx = [];
+  let howManyErased = 0;
   for(let i=0;i<4;i++) for(let j=0;j<4;j++){
     if(keyIsDown(raw[i])&&keyIsDown(col[j])&&key==' '){
       if(is_gameover)continue;
 
-      let how_many_erased = 0;
+      let isErased = 0;
 
-      //配列の一部を消しながら探索するので添字は逆順で見る
-      for(let k=meteors.length-1;k>=0;k--){
+      for(let k=0;k<meteors.length;k++){
         if(marginWidth+i*insideWidth/4<=meteors[k].x+meteors[k].radius&&meteors[k].x-meteors[k].radius<=marginWidth+(i+1)*insideWidth/4){
           if(marginHeight+j*insideHeight/4<=meteors[k].y+meteors[k].radius&&meteors[k].y-meteors[k].radius<=marginHeight+(j+1)*insideHeight/4){
-            meteors.splice(k,1);
-            if(how_many_erased==0) score+=10+floor(combo**0.5);
-            else score+=3*(10+floor(combo**0.5));
-            how_many_erased++;
+            eraseIdx.push(k);
+            isErased=1;
+
+
+            // meteors.splice(k,1);
+            // if(how_many_erased==0) score+=10+floor(combo**0.5);
+            // else score+=3*(10+floor(combo**0.5));
+            // how_many_erased++;
           }
         }
       }
 
 
-      if(how_many_erased>0) selectGrid++;
-      combo+=how_many_erased;
 
-      if(how_many_erased==0){
+      if(isErased) selectGrid++;
+      // combo+=how_many_erased;
+
+      if(!isErased){
         if(life>0) life--;
         if(life==0) is_gameover=1;
         combo=0;
       }
     }
-    if(selectGrid>1) score += selectGrid*10;
-    if(selectGrid>3) score += selectGrid*50;
   }
+
+  if(eraseIdx.length>0){
+
+    eraseIdx.sort((a,b) => {return a-b;});
+    if(key == ' ') console.log(eraseIdx);
+    
+    for(let i=eraseIdx.length-1;i>=0;i--){
+      if(i!=eraseIdx.length-1&&eraseIdx[i]==eraseIdx[i+1]) continue;
+      meteors.splice(eraseIdx[i],1);
+      howManyErased++;
+    }
+
+    score += combo*comboBonus;
+    score += howManyErased*manyErasedBonus;
+    if(selectGrid>0) score += selectGrid*manyGridBonus;
+    score += meteorErasedBonus;
+    combo += howManyErased;
+  }
+
+  
 
   if(key=='r'){
     init();
@@ -200,19 +231,49 @@ function draw() {
     }
 
   }
-
   else if(gameMode==2&&isPushed==0){
-    for(let i=0;i<4;i++){
-      let t =meteorData[i]["Time"];
-      let tx=meteorData[i]["X"];
-      let ty=meteorData[i]["Y"];
-      let vx=meteorData[i]["VelocityX"];
-      let vy=meteorData[i]["VelocityY"];
-      let r =meteorData[i]["Radius"]
-      meteors.push(new Meteor(tx-t*vx,ty-t*vy,vx,vy,r));
+    for(let ti=0;ti<4;ti++){
+      let bt = meteorData[ti]["baseTime"] * 60;
+      for(let i=0;i<4;i++){
+        let ot =meteorData[ti]["data"][i]["OT"] * 60;
+        let at =meteorData[ti]["data"][i]["AT"] * 60;
+        let ax=meteorData[ti]["data"][i]["AX"]*insideWidth/4+insideWidth/8 + marginWidth;
+        let ay=meteorData[ti]["data"][i]["AY"]*insideHeight/4+insideHeight/8+marginHeight;
+        let ox=meteorData[ti]["data"][i]["OX"]*insideWidth/4+insideWidth/8 + marginWidth;
+        let oy=meteorData[ti]["data"][i]["OY"]*insideHeight/4+insideHeight/8+marginHeight;
+        let r =meteorData[ti]["data"][i]["Radius"]
+        let vx =(ax-ox)/(at-ot); 
+        let vy =(ay-oy)/(at-ot);
+        // meteors.push(new Meteor(bt+ot,ox-vx*,oy,vx,vy,r));
+        meteors.push(new Meteor(ox-vx*(bt+ot),oy-vy*(bt+ot),vx,vy,r));
+
+      }
     }
     isPushed=1;
   }
+
+
+
+  // else if(gameMode==2&&isPushed==0){
+  //   for(let ti=0;ti<2;ti++){
+  //     let bt = meteorData[ti]["baseTime"];
+  //     for(let i=0;i<4;i++){
+  //       let ot =meteorData[ti]["data"][i]["OT"]+bt;
+  //       if(bt!=cnt_frame+ot) continue;
+  //       let at =meteorData[ti]["data"][i]["AT"]+bt;
+  //       let ax=meteorData[ti]["data"][i]["AX"]*insideWidth/4 + marginWidth;
+  //       let ay=meteorData[ti]["data"][i]["AY"]*insideHeight/4+marginHeight;
+  //       let ox=meteorData[ti]["data"][i]["OX"]*insideWidth/4 + marginWidth;
+  //       let oy=meteorData[ti]["data"][i]["OY"]*insideHeight/4+marginHeight;;
+  //       let r =meteorData[ti]["data"][i]["Radius"]
+  //       meteors.push(new Meteor(ox,oy,(ax-ox)/(at-ot),(ay-oy)/(at-ot),r));
+
+        
+  //       // meteors.push(new Meteor(tx-t*vx,ty-t*vy,vx,vy,r));
+  //     }
+  //   }
+  //   // isPushed=1;
+  // }
 
   // if(cnt_frame%60){
   //   gravity+=0.0001;
@@ -230,10 +291,9 @@ function draw() {
 
   }
 
-  speed_x += acc_x/(cnt_frame**0.9);
-  speed_y += acc_y/(cnt_frame**0.9);
+  speed_x += acc_x;
+  speed_y += acc_y;
 
   //key操作で色をつける
   color_line();
 }
-

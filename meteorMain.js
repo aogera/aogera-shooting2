@@ -1,6 +1,7 @@
 class Meteor{
 
     constructor(startX,startY,velocityX,velocityY,_radius=radius){
+    // constructor(startTime,startX,startY,velocityX,velocityY,_radius=radius){
         isGetBonus=0;
         this.x=startX;
         this.y=startY;
@@ -19,7 +20,8 @@ class Meteor{
         }
     }
     draw(){
-        (this.vx!=0&&this.vy!=0)?fill('gray'):fill('white');
+        // (this.vx!=0&&this.vy!=0)?fill('gray'):fill('white');
+        fill('white');
         circle(this.x,this.y,this.radius*2);
     }
     judgeOverCanvas(){
