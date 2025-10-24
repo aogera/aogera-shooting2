@@ -164,7 +164,7 @@
     ]
   },
   {
-    "baseTime": 35,
+    "baseTime": 30,
     "data": [
         {
             "OT" : 0,
@@ -205,7 +205,7 @@
     ]
   },
   {
-    "baseTime": 42,
+    "baseTime": 37,
     "data": [
         {
             "OT" : 3,
@@ -288,7 +288,7 @@
   },
 
   {
-    "baseTime": 57,
+    "baseTime":55,
     "data": [
         {
             "OT" : 3,
@@ -297,7 +297,7 @@
             "OY" : 0,
             "AX" : 0,
             "AY" : 1.5,
-            "Radius" : 10
+            "Radius":10
         },
         {
             "OT" : 3,
@@ -365,7 +365,7 @@
     ]
   },
   {
-    "baseTime": 64,
+    "baseTime": 62,
     "data": [
         {
             "OT" : 3,
@@ -406,7 +406,7 @@
     ]
   },
   {
-    "baseTime": 73,
+    "baseTime": 68,
     "data": [
         {
             "OT" : 3,
@@ -429,7 +429,7 @@
     ]
   },
   {
-    "baseTime": 80,
+    "baseTime": 75,
     "data": [
         {
             "OT" : 3,
@@ -452,7 +452,7 @@
     ]
   },
   {
-    "baseTime": 87,
+    "baseTime": 82,
     "data": [
         {
             "OT" : 3,
@@ -484,7 +484,7 @@
     ]
   },
   {
-    "baseTime": 94,
+    "baseTime": 89,
     "data": [
         {
             "OT" : 3,
@@ -525,7 +525,7 @@
     ]
   },
   {
-    "baseTime": 101,
+    "baseTime": 96,
     "data": [
         {
             "OT" : 3,

@@ -227,12 +227,22 @@ function draw() {
       let isDiagonal = floor(random(0,2));
     
       if(cnt_frame<300) direction=0,isDiagonal=0;
+
+      if(isDiagonal) {
+        /* 1/(sqrt(2)) = 0.7071 */
+        speed_x*=0.7071;
+        speed_y*=0.7071;
+      }
       meteors.push(new Meteor(
         (dx[direction]?-radius:marginWidth+insideWidth*(0.25*sx+0.125)),
         (dy[direction]?-radius:marginHeight+insideHeight*(0.25*sy+0.125)),
         (dx[direction]?speed_x:(isDiagonal?(sx<2?speed_x:-speed_x):0)),
         (dy[direction]?speed_y:(isDiagonal?(sy<2?speed_y:-speed_y):0))
       ));
+      if(isDiagonal) {
+        speed_x*=1.4142;
+        speed_y*=1.4142;
+      }
     }
 
   }
@@ -247,8 +257,11 @@ function draw() {
         let ox=meteorData[ti]["data"][i]["OX"]*insideWidth/4+insideWidth/8 + marginWidth;
         let oy=meteorData[ti]["data"][i]["OY"]*insideHeight/4+insideHeight/8+marginHeight;
         let r =meteorData[ti]["data"][i]["Radius"]
+
+        /*at==otだとここで0除算になってバグる！*/
         let vx =(ax-ox)/(at-ot); 
         let vy =(ay-oy)/(at-ot);
+
         // meteors.push(new Meteor(bt+ot,ox-vx*,oy,vx,vy,r));
         meteors.push(new Meteor(ox-vx*(bt+ot),oy-vy*(bt+ot),vx,vy,r));
 
