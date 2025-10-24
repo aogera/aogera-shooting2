@@ -45,9 +45,14 @@ let meteorData;
 let isPushed = 0;
 
 let pushingIdx = 0;
+function preload(){
+  meteorData = loadJSON("data.json");
+}
 
 function setup() {
-  meteorData = loadJSON('data.json');
+  // meteorData = loadJSON('data.json');
+  meteorData = Object.values(meteorData);
+  console.log(meteorData.length);
   shakeCanvas=new ShakeCanvas();
   createCanvas(canvasWidth, canvasHeight);
 }
@@ -232,9 +237,9 @@ function draw() {
 
   }
   else if(gameMode==2&&isPushed==0){
-    for(let ti=0;ti<4;ti++){
+    for(let ti=0;ti<meteorData.length;ti++){
       let bt = meteorData[ti]["baseTime"] * 60;
-      for(let i=0;i<4;i++){
+      for(let i=0;i<meteorData[ti].data.length;i++){
         let ot =meteorData[ti]["data"][i]["OT"] * 60;
         let at =meteorData[ti]["data"][i]["AT"] * 60;
         let ax=meteorData[ti]["data"][i]["AX"]*insideWidth/4+insideWidth/8 + marginWidth;
