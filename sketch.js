@@ -3,6 +3,8 @@ let comboBonus        = 5;
 let manyGridBonus     = 20;
 let meteorErasedBonus = 10;
 let manyErasedBonus   = 5;
+let selectGridNumber = 0;
+let diffScore = 0;
 
 let cnt_frame = 0;
 let meteors = [];
@@ -45,12 +47,15 @@ let meteorData;
 let isPushed = 0;
 
 let pushingIdx = 0;
+
+let failErase;
 function preload(){
   meteorData = loadJSON("data.json");
 }
 
 function setup() {
   // meteorData = loadJSON('data.json');
+  failErase = new FailErase();
   meteorData = Object.values(meteorData);
   console.log(meteorData.length);
   shakeCanvas=new ShakeCanvas();
@@ -114,6 +119,9 @@ function keyPressed(){
         }
       }
 
+      if(!isErased){
+        failErase.add(i,j);
+      }
 
 
       if(isErased) selectGrid++;
@@ -138,11 +146,17 @@ function keyPressed(){
       howManyErased++;
     }
 
+    let old = score;
+
     score += combo*comboBonus;
     score += howManyErased*manyErasedBonus;
     if(selectGrid>0) score += selectGrid*manyGridBonus;
     score += meteorErasedBonus;
     combo += howManyErased;
+    selectGridNumber = selectGrid;
+
+    diffScore = score-old;
+
   }
 
   
@@ -159,6 +173,8 @@ function keyPressed(){
 
 }
 
+
+
 function draw() {
   cnt_frame++;
   background(200);
@@ -167,6 +183,7 @@ function draw() {
   rect(marginWidth,marginHeight,insideWidth,insideHeight);
   strokeWeight(1);
 
+  failErase.draw();
 
   //余白の大きさを変えられる
   // marginWidth+=0.1;

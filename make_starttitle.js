@@ -61,6 +61,8 @@ function makeScores(){
   fill(0);
   textSize(40);
   text(score,10,40);
+  text('+',5,80); text(diffScore,30,80);
+  text(selectGridNumber,10,120);
   fill(255,0,0);
   textSize(30);
   text(str[life],canvasWidth-100,40);
@@ -138,4 +140,11 @@ function makeAllCrear(){
   stroke(0);
   strokeWeight(1);
   textAlign(LEFT);
+}
+
+function drawBonus(num){
+  fill('red');
+  textSize(100);
+  text(num,canvasWidth/4,canvasHeight/4);
+  console.log("aaaaaa");
 }
